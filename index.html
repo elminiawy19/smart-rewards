@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2E3192">
+<title>MUST Smart Rewards</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F6F4;--card:#fff;--ink:#14173A;--mute:#667085;--line:#E1E6EA;--bad:#C2402F;--navy:#2E3192;--green:#00A651;--onnavy:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D0F24;--card:#171A3A;--ink:#ECEEFF;--mute:#9AA0C8;--line:#272B55;--bad:#F08B7B;--navy:#4B4FC4;--green:#2FD07F}}
+:root[data-theme="dark"]{--bg:#0D0F24;--card:#171A3A;--ink:#ECEEFF;--mute:#9AA0C8;--line:#272B55;--bad:#F08B7B;--navy:#4B4FC4;--green:#2FD07F}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Sora,system-ui,sans-serif;display:flex;justify-content:center}
+.app{width:100%;max-width:430px;min-height:100vh}
+.page{display:none;min-height:100vh;flex-direction:column}.page.on{display:flex}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.chip{width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none;box-shadow:0 0 0 1px var(--line)}.chip img{width:38px;height:38px;display:block}
+/* home */
+.hd{display:flex;align-items:center;gap:12px;padding:20px 20px 18px}.hd .g{flex:1;min-width:0}.hd small{display:block;color:var(--mute);font-size:12.5px}.hd b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me{width:44px;height:44px;border-radius:50%;border:2px solid var(--green);background:none;color:var(--ink);font-weight:700;font-size:14px}
+.hero{margin:0 20px 14px;padding:24px;border-radius:24px;background:var(--navy);color:var(--onnavy);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-40px;bottom:-60px;width:170px;height:170px;border-radius:50%;background:var(--green);opacity:.95}
+.hero span{font-size:13px;opacity:.8}.hero b{display:block;font-size:56px;line-height:1.05;margin-top:6px;position:relative;z-index:1}.hero em{font-style:normal;font-size:14px;opacity:.85;position:relative;z-index:1}
+.scanbtn{display:flex;align-items:center;justify-content:center;gap:12px;width:calc(100% - 40px);margin:0 20px 14px;padding:18px;border:0;border-radius:20px;background:var(--green);color:#fff;font-weight:700;font-size:17px}
+.scanbtn svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.scanbtn small{display:block;font-weight:400;font-size:12px;opacity:.95;margin-top:2px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 20px 22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}.stat small{color:var(--mute);font-size:12.5px}.stat b{display:block;font-size:24px;margin-top:4px}
+.sec{margin:0 20px 10px;font-size:15px;font-weight:700}
+.rec{margin:0 20px 24px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 16px}
+.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px}.row:last-child{border:0}
+.row .dot{width:10px;height:10px;border-radius:50%;background:var(--green);flex:none}.row div{flex:1}.row small{display:block;color:var(--mute);font-size:12px}.row b{color:var(--green)}
+.empty{color:var(--mute);font-size:14px;padding:16px 0;text-align:center}
+.back{border:0;background:none;color:inherit;font-size:14px;padding:16px 20px;text-align:left}
+.body{padding:0 20px 28px;flex:1}
+.go{width:100%;margin-top:14px;padding:15px;border:0;border-radius:16px;font-weight:700;font-size:15px;color:#fff;background:var(--navy)}
+.go:disabled{opacity:.55}.go.alt{background:var(--green)}.go.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+/* redeem */
+.rbtn{display:flex;align-items:center;justify-content:center;width:calc(100% - 40px);margin:0 20px 14px;padding:16px;border:1.5px solid var(--navy);border-radius:20px;background:none;color:var(--ink);font-weight:700;font-size:16px}
+.chips{display:flex;gap:8px;margin:16px 0 4px}.chipb{flex:1;padding:12px 0;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:600;font-size:14px}.chipb.sel{border-color:var(--green);box-shadow:0 0 0 2px var(--green)}
+.qrcard{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;text-align:center;margin-top:16px}
+.qrcard .qimg{display:inline-block;background:#fff;border-radius:16px;padding:6px}.qrcard .qimg img{width:230px;height:230px;display:block;image-rendering:pixelated}
+.qrcard b.amt{display:block;font-size:30px;margin-top:14px;color:var(--green)}.qrcard small{display:block;color:var(--mute);font-size:13px;margin-top:6px;line-height:1.5}
+.row b.neg{color:var(--bad)}
+/* scan */
+.view{position:relative;height:260px;border-radius:20px;background:#0A0C1E;margin:12px 0 4px;display:grid;place-items:center;color:#A8AED8;font-size:13px;text-align:center;padding:20px}
+.view:before,.view:after{content:"";position:absolute;width:46px;height:46px;border:4px solid var(--green);border-radius:6px}
+.view:before{top:34px;left:34px;border-right:0;border-bottom:0}.view:after{bottom:34px;right:34px;border-left:0;border-top:0}
+.conn{display:none}.conn.on{display:block}
+.sess{padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-size:14px;line-height:1.6}
+.live{margin-top:12px;padding:18px;border-radius:16px;min-height:80px;font-size:15px;border:1px solid var(--line);background:var(--card)}
+.live.res{color:#fff;border:0;font-weight:600;background:var(--green)}
+/* login */
+.login{justify-content:center;align-items:stretch;padding:28px 24px}
+.lg{width:112px;height:112px;border-radius:50%;background:#fff;display:grid;place-items:center;margin:0 auto 18px;box-shadow:0 0 0 1px var(--line)}.lg img{width:96px;height:96px}
+.login h1{margin:0 0 4px;font-size:26px;text-align:center}.login p{margin:0 0 20px;color:var(--mute);font-size:14px;text-align:center}
+label{display:block;font-size:13px;color:var(--mute);margin:12px 0 6px}
+input{width:100%;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:15px}
+.err{display:none;margin-top:12px;color:var(--bad);font-size:13px}.err.on{display:block}
+.sw{margin-top:18px;text-align:center;font-size:14px;color:var(--mute)}.sw button{border:0;background:none;color:var(--green);font-weight:700}
+/* profile */
+.av{width:84px;height:84px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:30px;font-weight:700;margin:6px auto 10px;box-shadow:0 0 0 4px var(--green)}
+.pn{text-align:center;font-size:20px;font-weight:700}.pe{text-align:center;color:var(--mute);font-size:14px;margin-bottom:18px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 16px;margin-bottom:14px}
+.r{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}.r:last-child{border:0}.r span{color:var(--mute)}.r b{text-align:right;word-break:break-all}
+.out{width:100%;padding:14px;border-radius:16px;border:1px solid var(--bad);background:none;color:var(--bad);font-weight:700;font-size:15px}
+
+.scanbtn:disabled,.rbtn:disabled{opacity:.55;cursor:not-allowed}
+.scanbtn small,.rbtn small{display:block;font-weight:400;font-size:12px;margin-top:2px;opacity:.9}
+.rbtn{flex-direction:column;gap:0}
+.nm{display:flex;gap:8px;margin-top:6px}.nm input{flex:1}.nm button{padding:0 18px;border:0;border-radius:14px;background:var(--navy);color:#fff;font-weight:700}
+.ok{color:var(--green);font-size:13px;margin-top:8px;min-height:18px}
+
+.chipb:disabled{opacity:.4;cursor:not-allowed}
+.view{overflow:hidden}.view video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.view:before,.view:after{z-index:1}.view span{position:relative;z-index:1}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="page" id="loading"><div style="margin:auto;color:var(--mute);font-size:14px">Loading...</div></div>
+
+<div class="page login" id="login">
+  <div class="lg"><img src="logo.png" alt="Misr University for Science and Technology"></div>
+  <h1 id="lt">Welcome back</h1><p id="ls">Sign in to start earning points</p>
+  <div id="nf" style="display:none"><label for="name">Full name</label><input id="name" autocomplete="name"></div>
+  <label for="email">Email</label><input id="email" type="email" autocomplete="email">
+  <label for="pass">Password</label><input id="pass" type="password" autocomplete="current-password">
+  <div class="err" id="err"></div>
+  <button class="go" id="submit">Sign in</button>
+  <div class="sw"><span id="swt">Don't have an account?</span> <button id="swb">Create account</button></div>
+</div>
+
+<div class="page" id="home">
+  <div class="hd">
+    <div class="chip"><img src="logo.png" alt=""></div>
+    <div class="g"><small>Welcome</small><b id="hn"></b></div>
+    <button class="me" id="meb" data-go="profile" aria-label="Profile"></button>
+  </div>
+  <div class="hero"><span>Your points</span><b id="tot">0</b><em>points <b id="egp" style="font-size:15px;opacity:1"></b></em></div>
+  <button class="scanbtn" data-go="scan"><span style="text-align:center">Scan to recycle<small id="hs">Tap to connect to the robot</small></span></button>
+  <button class="rbtn" data-go="redeem"><span>Redeem points</span></button>
+  <button class="rbtn" id="cbtn" data-go="cashier" style="display:none;border-color:var(--green)"><span>Cashier desk</span></button>
+  <p id="rate" style="margin:-4px 20px 14px;color:var(--mute);font-size:13px;text-align:center"></p>
+  <div class="stats"><div class="stat"><small>Items recycled</small><b id="si">0</b></div><div class="stat"><small>Most recycled</small><b id="sw2">None yet</b></div></div>
+  <div class="sec">Recent</div>
+  <div class="rec" id="recent"></div>
+</div>
+
+<div class="page" id="scan">
+  <button class="back" data-go="home">← Back</button>
+  <div class="body">
+    <h1 style="margin:0 0 4px;font-size:22px">Scan the robot</h1>
+    <p id="sp" style="margin:0;color:var(--mute);font-size:14px">Point your camera at the QR code on the machine.</p>
+    <div id="sa">
+      <div class="view"><video id="cam" playsinline muted></video><span id="vmsg">Starting camera...</span></div>
+      <label for="code">Or type the machine code</label>
+      <div class="nm"><input id="code" placeholder="RVM-01" autocapitalize="characters"><button id="cgo">Connect</button></div>
+      <div class="err" id="serr"></div>
+    </div>
+    <div class="conn" id="sb">
+      <div class="sess" id="st" style="margin-top:14px"></div>
+      <div class="live" id="lv">Waiting for you to drop an item into the robot.</div>
+      <button class="go alt" id="sim" style="display:none"></button>
+      <button class="go ghost" id="fin">Finish</button>
+    </div>
+    <div class="box" style="margin-top:18px"><div style="padding:14px 0 4px;font-weight:700;font-size:15px">Points per item</div><div id="ptl"></div></div>
+  </div>
+</div>
+
+<div class="page" id="redeem">
+  <button class="back" data-go="home">← Back</button>
+  <div class="body">
+    <h1 style="margin:0 0 4px;font-size:22px">Redeem points</h1>
+    <p id="rinfo" style="margin:0;color:var(--mute);font-size:14px"></p>
+    <div class="box" style="margin-top:16px"><div class="r"><span>Available</span><b id="rav">0 points</b></div></div>
+    <div id="rform">
+      <div class="chips" id="chips"></div>
+      <label for="ramt">Or enter points</label><input id="ramt" type="number" inputmode="numeric">
+      <div class="ok" id="rprev" style="color:var(--ink)"></div>
+      <div class="err" id="rerr"></div>
+      <button class="go alt" id="rgo">Generate QR code</button>
+    </div>
+    <div class="conn" id="rqr">
+      <div class="qrcard"><div class="qimg" id="qimg"></div><b class="amt" id="qamt"></b><small id="qcode"></small><small>Show this QR code at the cashier. It can be used once.</small></div>
+      <button class="go ghost" id="rdone">Done</button>
+    </div>
+    <div class="sec" style="margin:24px 0 10px">My vouchers</div>
+    <div class="rec" style="margin:0" id="vlist"></div>
+  </div>
+</div>
+
+<div class="page" id="cashier">
+  <button class="back" data-go="home">← Back</button>
+  <div class="body">
+    <h1 style="margin:0 0 4px;font-size:22px">Cashier desk</h1>
+    <p style="margin:0;color:var(--mute);font-size:14px">Scan the customer's voucher QR code or type the code.</p>
+    <div id="ca">
+      <div class="view"><video id="cam2" playsinline muted></video><span id="vmsg2">Starting camera...</span></div>
+      <label for="vcode">Or type the voucher code</label>
+      <div class="nm"><input id="vcode" placeholder="RD-XXXXXXXX" autocapitalize="characters"><button id="vgo">Check</button></div>
+      <div class="err" id="verr"></div>
+    </div>
+    <div class="conn" id="cb">
+      <div class="qrcard" style="margin-top:14px"><b class="amt" id="veg"></b><small id="vst"></small></div>
+      <div class="box" style="margin-top:14px">
+        <div class="r"><span>Customer</span><b id="vc"></b></div>
+        <div class="r"><span>Points</span><b id="vp"></b></div>
+        <div class="r"><span>Code</span><b id="vcd"></b></div>
+        <div class="r"><span>Created</span><b id="vdt"></b></div>
+      </div>
+      <button class="go alt" id="pay"></button>
+      <button class="go ghost" id="cnext">Check another voucher</button>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="profile">
+  <button class="back" data-go="home">← Back</button>
+  <div class="body">
+    <div class="av" id="av"></div><div class="pn" id="pn"></div><div class="pe" id="pe"></div>
+    <label for="nname">Your name</label>
+    <div class="nm"><input id="nname" autocomplete="name"><button id="nsave">Save</button></div>
+    <div class="ok" id="nok"></div>
+    <div class="box" style="margin-top:10px">
+      <div class="r"><span>User ID</span><b id="pid"></b></div>
+      <div class="r"><span>Member since</span><b id="pdt"></b></div>
+    </div>
+    <div class="box">
+      <div class="r"><span>Total points</span><b id="ppt"></b></div>
+      <div class="r"><span>PET bottles</span><b id="n_pet">0</b></div>
+      <div class="r"><span>Aluminium cans</span><b id="n_aluminium">0</b></div>
+      <div class="r"><span>Cables</span><b id="n_cable">0</b></div>
+      <div class="r"><span>Paper</span><b id="n_paper">0</b></div>
+    </div>
+    <button class="out" id="logout">Log out</button>
+  </div>
+</div>
+
+</div>
+<script src="jsQR.js"></script>
+<script src="qrcode.js"></script>
+<script type="module">
+import {firebaseConfig} from './firebase-config.js';
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {getFirestore,doc,setDoc,updateDoc,getDoc,addDoc,writeBatch,increment,Timestamp,onSnapshot,collection,query,where,serverTimestamp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const M={pet:'PET bottle',aluminium:'Aluminium can',cable:'Cable',paper:'Paper'};
+const $=id=>document.getElementById(id);
+let rw=null,cp=null,user=null,me=null,deps=[],unsub=[],signup=false,creating=false,depsReady=false,vouchers=[],isAdmin=false;
+let sess=null,sessRef=null,sessUnsub=null,timer=null,stream=null,testM=false,busy=false,expiring=false;
+const LIM=60;
+
+function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id===id));window.scrollTo(0,0);if(id==='profile')render();if(id==='scan')openScan();else if(id==='cashier')openCashier();else{stopCam();if(id==='redeem')renderRedeem()}}
+const init=n=>(n||'U').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+const nameOf=()=>(me&&me.name)||(user&&user.displayName)||(user&&user.email.split('@')[0])||'';
+
+function render(){
+  if(!user)return;
+  const name=nameOf(),c=(me&&me.counts)||{};
+  $('hn').textContent=name;$('meb').textContent=init(name);
+  const pts=me?me.points:0,ppe=rw&&rw.pointsPerEgp>0?rw.pointsPerEgp:0;
+  $('tot').textContent=pts;
+  $('ptl').innerHTML=cp?Object.keys(M).map(k=>'<div class="r"><span>'+M[k]+'</span><b>+'+cp[k]+' points'+(ppe?' · '+(+(cp[k]/ppe).toFixed(2))+' EGP':'')+'</b></div>').join(''):'<div class="r"><span>Loading...</span></div>';
+  $('egp').textContent=ppe?'≈ '+(+(pts/ppe).toFixed(2))+' EGP':'';
+  $('rate').textContent=ppe?ppe+' points = 1 EGP'+(rw.minRedeemPoints?' · Minimum to redeem: '+rw.minRedeemPoints+' points':''):'';
+  let n=0,top='',tv=0;for(const k in M){const v=c[k]||0;n+=v;$('n_'+k).textContent=v;if(v>tv){tv=v;top=k}}
+  $('si').textContent=n;$('sw2').textContent=top?M[top]+'s':'None yet';
+  $('recent').innerHTML=deps.length?deps.slice(0,3).map(d=>{
+    const t=d.createdAt&&d.createdAt.toDate?d.createdAt.toDate().toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'Just now';
+    return '<div class="row"><span class="dot"></span><div>'+(M[d.material]||d.material)+'<small>'+t+'</small></div><b>+'+d.points+'</b></div>'}).join(''):'<div class="empty">No deposits yet</div>';
+  $('av').textContent=init(name);$('pn').textContent=name;$('pe').textContent=user.email;
+  if(document.activeElement!==$('nname'))$('nname').value=name;
+  $('pid').textContent=user.uid.slice(0,8).toUpperCase();
+  $('pdt').textContent=new Date(user.metadata.creationTime).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  $('ppt').textContent=(me?me.points:0)+' points';
+  renderRedeem();$('cbtn').style.display=isAdmin?'block':'none';
+}
+
+function errMsg(e){
+  const m={'auth/invalid-credential':'Wrong email or password.','auth/invalid-login-credentials':'Wrong email or password.','auth/user-not-found':'No account found for this email.','auth/wrong-password':'Wrong email or password.','auth/email-already-in-use':'This email is already registered. Sign in instead.','auth/weak-password':'Password must be at least 6 characters.','auth/invalid-email':'Enter a valid email, for example name@example.com.','auth/network-request-failed':'No internet connection. Try again.','auth/too-many-requests':'Too many attempts. Wait a few minutes and try again.'};
+  return m[e.code]||('Something went wrong ('+(e.code||e.message)+').');
+}
+function mode(s){signup=s;$('nf').style.display=s?'block':'none';$('lt').textContent=s?'Create your account':'Welcome back';$('ls').textContent=s?'Register to track your recycling':'Sign in to start earning points';$('submit').textContent=s?'Create account':'Sign in';$('swt').textContent=s?'Already registered?':"Don't have an account?";$('swb').textContent=s?'Sign in':'Create account';$('err').className='err';$('pass').autocomplete=s?'new-password':'current-password'}
+const fail=t=>{$('err').textContent=t;$('err').className='err on'};
+const newUserDoc=(name,email)=>({name,email,points:0,counts:{pet:0,aluminium:0,cable:0,paper:0},createdAt:serverTimestamp()});
+
+$('swb').onclick=()=>mode(!signup);
+$('submit').onclick=async()=>{
+  const em=$('email').value.trim().toLowerCase(),pw=$('pass').value,nm=$('name').value.trim();
+  if(signup&&!nm)return fail('Enter your full name.');
+  if(!/^\S+@\S+\.\S+$/.test(em))return fail('Enter a valid email, for example name@example.com.');
+  if(pw.length<6)return fail('Password must be at least 6 characters.');
+  $('submit').disabled=true;$('err').className='err';
+  try{
+    if(signup){
+      creating=true;
+      const cr=await createUserWithEmailAndPassword(auth,em,pw);
+      await updateProfile(cr.user,{displayName:nm});
+      await setDoc(doc(db,'users',cr.user.uid),newUserDoc(nm,em));
+      creating=false;
+    }else await signInWithEmailAndPassword(auth,em,pw);
+    $('pass').value='';
+  }catch(e){creating=false;fail(errMsg(e))}
+  $('submit').disabled=false;
+};
+$('pass').onkeydown=e=>{if(e.key==='Enter')$('submit').click()};
+$('logout').onclick=()=>signOut(auth);
+$('nsave').onclick=async()=>{
+  const v=$('nname').value.trim();if(!v||!user)return;
+  try{await updateDoc(doc(db,'users',user.uid),{name:v});await updateProfile(user,{displayName:v});$('nok').textContent='Name updated.';setTimeout(()=>$('nok').textContent='',2500)}
+  catch(e){$('nok').textContent='Could not save. Check your internet.'}
+};
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)show(g.dataset.go)});
+
+// ---------- scan + session ----------
+const cv=document.createElement('canvas'),cx=cv.getContext('2d',{willReadFrequently:true});
+let camEl=null,camCb=null,looping=false;
+async function startCam(el,cb,msg){
+  if(stream)return;
+  camEl=el;camCb=cb;msg.textContent='Starting camera...';
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    el.srcObject=stream;await el.play();msg.textContent='';loop();
+  }catch(e){stream=null;msg.textContent='Camera unavailable. Type the code below.'}
+}
+function stopCam(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}if(camEl)camEl.srcObject=null;looping=false}
+function loop(){
+  if(!stream||!camEl){looping=false;return}
+  if(camEl.readyState===4&&camEl.videoWidth){
+    cv.width=camEl.videoWidth;cv.height=camEl.videoHeight;cx.drawImage(camEl,0,0);
+    const im=cx.getImageData(0,0,cv.width,cv.height),c=window.jsQR(im.data,im.width,im.height);
+    if(c&&camCb(c.data)){looping=false;return}
+  }
+  looping=true;requestAnimationFrame(loop);
+}
+const scanCb=d=>{if(/^rvm:/i.test(d)){connect(d.slice(4));return true}return false};
+const startScanCam=()=>startCam($('cam'),scanCb,$('vmsg'));
+function serr(t){$('serr').textContent=t;$('serr').className='err on';setTimeout(()=>{if(stream&&!sess&&!looping)loop()},2000)}
+function openScan(){stopCam();if(!sess){$('serr').className='err';startScanCam()}scanView()}
+async function connect(raw){
+  const id=(raw||'').trim().toUpperCase();
+  if(!id)return serr('Scan the QR code or type the machine code.');
+  try{
+    const m=await getDoc(doc(db,'machines',id));
+    if(!m.exists())return serr('Machine '+id+' was not found.');
+    const d=m.data(),test=d.testMode===true;
+    const fresh=d.updatedAt&&d.updatedAt.toMillis&&Date.now()-d.updatedAt.toMillis()<45000;
+    if(!test&&!fresh)return serr('This machine is offline.');
+    if(d.status!=='idle')return serr('This machine is in use. Try again in a moment.');
+    stopCam();testM=test;
+    const ref=await addDoc(collection(db,'sessions'),{uid:user.uid,machineId:id,status:'open',createdAt:serverTimestamp()});
+    watch(ref,id);
+  }catch(e){serr('Could not connect ('+(e.code||'network')+'). Check your internet and try again.')}
+}
+function watch(ref,id){
+  sessRef=ref;sess={status:'open',machineId:id};expiring=false;
+  if(sessUnsub)sessUnsub();
+  sessUnsub=onSnapshot(ref,s=>{if(s.exists())sess=s.data();scanView()},()=>{});
+  clearInterval(timer);timer=setInterval(scanView,1000);scanView();
+}
+function resetSession(msg){
+  if(sessUnsub)sessUnsub();sessUnsub=null;sess=null;sessRef=null;clearInterval(timer);testM=false;expiring=false;busy=false;
+  $('hs').textContent='Tap to connect to the robot';$('sa').style.display='block';$('sb').className='conn';
+  $('serr').textContent=msg||'';$('serr').className='err'+(msg?' on':'');
+  $('lv').className='live';$('lv').textContent='Waiting for you to drop an item into the robot.';
+}
+function endLocal(msg){resetSession(msg);if($('scan').classList.contains('on'))startScanCam()}
+function scanView(){
+  if(sess&&(sess.status==='closed'||sess.status==='expired')){endLocal(sess.status==='expired'?'Session ended. Scan again to continue.':'');return}
+  const on=!!sess;
+  $('sa').style.display=on?'none':'block';$('sb').className='conn'+(on?' on':'');
+  $('sp').textContent=on?'You are connected. The robot will recognise your item.':'Point your camera at the QR code on the machine.';
+  if(!on){$('hs').textContent='Tap to connect to the robot';return}
+  if(sess.status==='open'){
+    $('st').innerHTML='Connecting to <b>'+sess.machineId+'</b>...<br>Waiting for the robot to accept.';
+    $('hs').textContent='Connecting...';
+    $('sim').textContent='Test mode: robot accepts the session';
+  }else{
+    const left=sess.expiresAt&&sess.expiresAt.toMillis?Math.max(0,Math.ceil((sess.expiresAt.toMillis()-Date.now())/1000)):LIM;
+    $('st').innerHTML='Connected to <b>'+sess.machineId+'</b> as <b>'+nameOf()+'</b><br>Session closes in '+left+' s if the robot stays idle.';
+    $('hs').textContent='Connected · '+left+'s left';
+    $('sim').textContent='Test mode: drop a random item';
+    if(testM&&left<=0&&!expiring){expiring=true;updateDoc(sessRef,{status:'expired'}).catch(()=>{})}
+  }
+  $('sim').style.display=testM?'block':'none';
+}
+function showResult(d){
+  const ppe=rw&&rw.pointsPerEgp>0?rw.pointsPerEgp:0;
+  $('lv').className='live res';
+  $('lv').innerHTML=(M[d.material]||d.material)+' recognised<br>+'+d.points+' points'+(ppe?' (≈ '+(+(d.points/ppe).toFixed(2))+' EGP)':'')+' added to '+nameOf();
+}
+$('cgo').onclick=()=>connect($('code').value);
+$('code').onkeydown=e=>{if(e.key==='Enter')$('cgo').click()};
+$('fin').onclick=async()=>{try{if(sessRef)await updateDoc(sessRef,{status:'closed'})}catch(e){}resetSession('');show('home')};
+// test mode only: acts as the robot (needs machines/RVM-01.testMode = true and the test-mode rules)
+$('sim').onclick=async()=>{
+  if(!sess||!sessRef||busy)return;
+  busy=true;
+  try{
+    if(sess.status==='open'){await updateDoc(sessRef,{status:'active',expiresAt:Timestamp.fromMillis(Date.now()+LIM*1000)})}
+    else{
+      const keys=Object.keys(M),k=keys[Math.floor(Math.random()*keys.length)],pts=cp&&cp[k];
+      if(!pts)throw new Error('config/points is missing');
+      const b=writeBatch(db);
+      b.set(doc(collection(db,'deposits')),{uid:user.uid,machineId:sess.machineId,sessionId:sessRef.id,material:k,points:pts,createdAt:serverTimestamp()});
+      b.update(doc(db,'users',user.uid),{points:increment(pts),['counts.'+k]:increment(1)});
+      await b.commit();
+      await updateDoc(sessRef,{expiresAt:Timestamp.fromMillis(Date.now()+LIM*1000)});
+    }
+  }catch(e){$('lv').className='live';$('lv').textContent='Test failed: '+(e.code||e.message)}
+  busy=false;
+};
+
+// ---------- redeem (customer) ----------
+const egpOf=(a,p)=>+(a/p).toFixed(2);
+const rate=()=>({ppe:rw&&rw.pointsPerEgp>0?rw.pointsPerEgp:0,min:(rw&&rw.minRedeemPoints)||0});
+function renderRedeem(){
+  if(!user)return;
+  const {ppe,min}=rate(),pts=me?me.points:0,all=ppe?Math.floor(pts/ppe)*ppe:0;
+  $('rav').textContent=pts+' points'+(ppe?' (≈ '+egpOf(pts,ppe)+' EGP)':'');
+  $('rinfo').textContent=ppe?ppe+' points = 1 EGP · Minimum '+min+' points · Whole pounds only':'Loading settings...';
+  $('chips').innerHTML=ppe?[min,min*2,min*4,all].map((v,i)=>'<button class="chipb" data-v="'+v+'"'+(v>pts||v<min||v<=0?' disabled':'')+'>'+(i===3?'All ('+v+')':v)+'</button>').join(''):'';
+  $('vlist').innerHTML=vouchers.length?vouchers.slice(0,5).map(v=>{
+    const used=v.status!=='active',t=v.createdAt&&v.createdAt.toDate?v.createdAt.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'Just now';
+    return '<div class="row"'+(used?'':' data-v="'+v.code+'" style="cursor:pointer"')+'><span class="dot"'+(used?' style="background:var(--mute)"':'')+'></span><div>'+egpOf(v.amount,v.pointsPerEgp)+' EGP<small>'+v.code+' · '+t+'</small></div>'+(used?'<b style="color:var(--mute)">Used</b>':'<b>Active</b>')+'</div>'}).join(''):'<div class="empty">No vouchers yet</div>';
+}
+function prev(){const {ppe}=rate(),a=parseInt($('ramt').value,10);$('rprev').textContent=ppe&&a>0?'= '+egpOf(a,ppe)+' EGP':''}
+$('chips').onclick=e=>{const b=e.target.closest('.chipb');if(!b||b.disabled)return;$('ramt').value=b.dataset.v;$('rerr').className='err';prev()};
+$('ramt').oninput=()=>{$('rerr').className='err';prev()};
+$('vlist').onclick=e=>{const r=e.target.closest('[data-v]');if(!r)return;const v=vouchers.find(x=>x.code===r.dataset.v);if(v)showQr(v)};
+function showQr(v){
+  const q=qrcode(0,'M');q.addData('redeem:'+user.uid+':'+v.amount+':'+v.code);q.make();
+  $('qimg').innerHTML=q.createImgTag(6,12);
+  $('qamt').textContent=egpOf(v.amount,v.pointsPerEgp)+' EGP';
+  $('qcode').textContent=v.amount+' points · Code '+v.code;
+  $('rform').style.display='none';$('rqr').className='conn on';window.scrollTo(0,0);
+}
+function makeCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r=crypto.getRandomValues(new Uint8Array(8));return 'RD-'+[...r].map(x=>A[x%A.length]).join('')}
+$('rdone').onclick=()=>{$('rqr').className='conn';$('rform').style.display='block';$('ramt').value='';prev()};
+$('rgo').onclick=async()=>{
+  const e=$('rerr'),{ppe,min}=rate(),a=parseInt($('ramt').value,10),pts=me?me.points:0;
+  const bad=m=>{e.textContent=m;e.className='err on'};
+  if(!ppe)return bad('Redeem settings are not available. Try again.');
+  if(!a||a<1)return bad('Enter the number of points.');
+  if(a<min)return bad('Minimum is '+min+' points.');
+  if(a%ppe)return bad('Points must be a multiple of '+ppe+' (whole pounds).');
+  if(a>pts)return bad('You only have '+pts+' points.');
+  $('rgo').disabled=true;e.className='err';
+  const code=makeCode();
+  try{
+    const b=writeBatch(db);
+    b.set(doc(db,'vouchers',code),{uid:user.uid,amount:a,pointsPerEgp:ppe,code,status:'active',createdAt:serverTimestamp()});
+    b.update(doc(db,'users',user.uid),{points:increment(-a)});
+    await b.commit();
+    showQr({code,amount:a,pointsPerEgp:ppe});
+  }catch(err){bad('Could not create the voucher ('+(err.code||'error')+').')}
+  $('rgo').disabled=false;
+};
+
+// ---------- cashier ----------
+let cur=null;
+const verr=t=>{$('verr').textContent=t;$('verr').className='err on';setTimeout(()=>{if(stream&&!looping)loop()},2000)};
+function openCashier(){
+  stopCam();
+  if($('ca').style.display!=='none')startCam($('cam2'),d=>{if(/^redeem:/i.test(d)){lookup(d);return true}return false},$('vmsg2'));
+}
+async function lookup(raw){
+  let code=(raw||'').trim(),qr=null;
+  if(/^redeem:/i.test(code)){const p=code.split(':');qr={uid:p[1],amount:+p[2]};code=p[3]}
+  code=(code||'').toUpperCase();
+  if(!code)return verr('Scan the QR code or type the voucher code.');
+  try{
+    const s=await getDoc(doc(db,'vouchers',code));
+    if(!s.exists())return verr('Voucher '+code+' was not found.');
+    const v=s.data(),u=await getDoc(doc(db,'users',v.uid));
+    stopCam();showVoucher(v,u.exists()?u.data().name:'Unknown',!!qr&&(qr.uid!==v.uid||qr.amount!==v.amount));
+  }catch(e){verr('Could not check the voucher ('+(e.code||'network')+').')}
+}
+function showVoucher(v,name,mismatch){
+  cur=v;const egp=egpOf(v.amount,v.pointsPerEgp),used=v.status!=='active';
+  $('ca').style.display='none';$('cb').className='conn on';$('verr').className='err';
+  $('veg').textContent=egp+' EGP';
+  $('vst').textContent=mismatch?'Warning: the QR data does not match this voucher.':used?('Already used'+(v.usedAt&&v.usedAt.toDate?' on '+v.usedAt.toDate().toLocaleString():'')):'Valid · pay the customer this amount in cash';
+  $('vc').textContent=name;$('vp').textContent=v.amount+' points';$('vcd').textContent=v.code;
+  $('vdt').textContent=v.createdAt&&v.createdAt.toDate?v.createdAt.toDate().toLocaleString():'';
+  $('pay').style.display=used||mismatch?'none':'block';$('pay').textContent='Mark as paid ('+egp+' EGP)';
+}
+$('vgo').onclick=()=>lookup($('vcode').value);
+$('vcode').onkeydown=e=>{if(e.key==='Enter')$('vgo').click()};
+$('pay').onclick=async()=>{
+  if(!cur)return;$('pay').disabled=true;
+  try{
+    await updateDoc(doc(db,'vouchers',cur.code),{status:'used',usedAt:serverTimestamp(),usedBy:user.uid});
+    $('vst').textContent='Paid. This voucher can no longer be used.';$('pay').style.display='none';cur.status='used';
+  }catch(e){$('vst').textContent='Could not mark as paid ('+(e.code||'error')+'). Check that the voucher is still active.'}
+  $('pay').disabled=false;
+};
+$('cnext').onclick=()=>{cur=null;$('cb').className='conn';$('ca').style.display='block';$('verr').className='err';$('vcode').value='';openCashier()};
+
+onAuthStateChanged(auth,u=>{
+  unsub.forEach(f=>f());unsub=[];user=u;me=null;rw=null;cp=null;deps=[];depsReady=false;vouchers=[];isAdmin=false;resetSession('');
+  if(!u){mode(false);show('login');return}
+  unsub.push(onSnapshot(doc(db,'users',u.uid),s=>{
+    me=s.exists()?s.data():null;
+    if(!s.exists()&&!creating){creating=true;setDoc(doc(db,'users',u.uid),newUserDoc(nameOf(),u.email)).catch(()=>{}).finally(()=>creating=false)}
+    render();
+  },()=>{}));
+  unsub.push(onSnapshot(doc(db,'admins',u.uid),s=>{isAdmin=s.exists();render()},()=>{isAdmin=false}));
+  unsub.push(onSnapshot(query(collection(db,'vouchers'),where('uid','==',u.uid)),s=>{
+    const ms=x=>x.createdAt&&x.createdAt.toMillis?x.createdAt.toMillis():Date.now();
+    vouchers=s.docs.map(d=>d.data()).sort((a,b)=>ms(b)-ms(a));render();
+  },()=>{}));
+  unsub.push(onSnapshot(doc(db,'config','points'),s=>{cp=s.exists()?s.data():null;render()},()=>{}));
+  unsub.push(onSnapshot(doc(db,'config','rewards'),s=>{rw=s.exists()?s.data():null;render()},()=>{}));
+  unsub.push(onSnapshot(query(collection(db,'deposits'),where('uid','==',u.uid)),s=>{
+    s.docChanges().forEach(ch=>{if(ch.type==='added'&&depsReady&&sess&&sessRef&&ch.doc.data().sessionId===sessRef.id)showResult(ch.doc.data())});depsReady=true;
+    deps=s.docs.map(d=>d.data()).sort((a,b)=>((b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():Date.now())-(a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():Date.now())));
+    render();
+  },()=>{}));
+  render();show('home');
+});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
